@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plant Monitoring System</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--Stylesheet CSS-->
+    <link href="static/stylesheet.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="static/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="static/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header"><i class="fa fa-leaf"></i></i> Plant Monitoring System (PMS)</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-thermometer-half fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div><strong>Temperature/Humidity:</strong></div>
+                            <div class="large">{{temperature}}C / {{humidity}}%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">{{tempAdvisory}}</span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-lightbulb fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div><strong>Light Level:</strong></div>
+                            <div class="large">{{lightLevel}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">{{lightAdvisory}}</span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tint fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div><strong>Moisture:</strong></div>
+                            <div class="large">{{moisture}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">{{moistureAdvisory}}</span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bars fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div><strong>Water Level:</strong></div>
+                            <div class="large">{{waterLevel}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">{{waterAdvisory}}</span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div><i class="fa fa-info"></i> Information</div>
+                </div>
+                <div class="panel panel-body">
+                    <p><strong>DIGITAL SENSORS:</strong><br/>
+                        DHT_11(Temperature/Humidity)<br/>
+                        Temperature is in degrees celsius (C)<br/>
+                        Humidity is in percentage (%)
+                    </p>
+
+                    <p><strong>ANALOG SENSORS:</strong><br/>
+                        Water Level, Soil Moisture, Light Sensor<br/><br/>
+                        Water Level: 1 is highest water level<br/>
+                        Soil Moisture: 1 means soil is completely dry<br/>
+                        Light Sensor: 1 means there is no light
+                    </p>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div><i class="fa fa-cog"></i> Application Controls</div>
+                </div>
+                <div class="panel panel-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="displayMsg">Display Message</label>
+                            <input type="text" class="form-control" id="displayMsg" name="displayMsg">
+                        </div>
+                        <button id="btnSetMsg" class="btn btn-default">Set Message</button>
+                        <br/>
+                        <label for="stategrp">Turn On/Off recording:</label>
+                        <div class="form-group" id="stategrp">
+                            <label class="checkbox-inline"><input id="stateInput" type="checkbox">Record Sensor Readings</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div><i class="fa fa-bar-chart"></i> Sensor History</div>
+                </div>
+                <div class="panel panel-body">
+                    <p>Temperature/Humidity</p>
+                    <hr/>
+                    <div id="graph-temp"></div>
+                    <p>Light, Moisture & Water Levels</p>
+                    <hr/>
+                    <div id="graph-others"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="static/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="static/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Morris Charts JavaScript -->
+<script src="static/raphael/raphael.min.js"></script>
+<script src="static/morrisjs/morris.min.js"></script>
+<!--<script src="../data/morris-data.js"></script>-->
+
+<script>
+
+$.ajax({
+    method: "GET",
+    url: "/getHistory",
+    context: "application/json",
+    success: function (data){
+        Morris.Line({
+            element: 'graph-temp',
+            data: data,
+            xkey: 'time',
+            ykeys: ['temperature','humidity'],
+            labels: ['Temperature', 'Humidity']
+        });
+        Morris.Line({
+            element: 'graph-others',
+            data: data,
+            xkey: 'time',
+            ykeys: ['lightlvl', 'moisture','waterlvl'],
+            labels: ['Light Level', 'Moisture', 'Water Level']
+        });
+    }
+});
+
+$.ajax({
+    method:'GET',
+    url:'/getMessage',
+    context:'application/json',
+    success: function(data){
+        $('#displayMsg').val(data.message)
+    }
+});
+
+$.ajax({
+    method:'GET',
+    url:'/getState',
+    context:'application/json',
+    success: function(data){
+        if(data.state){
+            $('#stateInput').prop('checked', true);
+        }else{
+            $('#stateInput').prop('checked', false);
+        }
+    }
+});
+
+$('#btnSetMsg').click(function(){
+    console.log("Set msg clicked!");
+    var webFormData = new WebFormData($('#displayMsg').val());
+    console.dir(webFormData);
+    $.ajax({
+    type : "POST",
+    url : "/updateMessage",
+    data: JSON.stringify(webFormData, null, '\t'),
+    contentType: 'application/json;charset=UTF-8'
+    });
+});
+
+$('#stateInput').change(function(){
+    console.log('state changed!');
+    var state = true;
+    if ($('#stateInput').is(':checked')) {
+        state = true;
+    }else{
+        state= false;
+    }
+
+    var stateData = new StateData(state);
+    $.ajax({
+    type : "POST",
+    url : "/setState",
+    data: JSON.stringify(stateData, null, '\t'),
+    contentType: 'application/json;charset=UTF-8'
+    });
+});
+
+function StateData(state){
+    this.state = state
+}
+
+function WebFormData(message){
+    this.message = message
+}
+
+
+
+
+</script>
+
+</body>
+
+
+</html>
